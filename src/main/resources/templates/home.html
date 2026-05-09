@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrepreneurial Advising Scheduler</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+        .navbar { background: #1a3a5c; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar h1 { margin: 0; font-size: 1.3rem; }
+        .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
+        .navbar nav a:hover { color: white; }
+        .hero { text-align: center; padding: 60px 20px 40px; background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%); color: white; }
+        .hero h2 { font-size: 2rem; margin-bottom: 12px; }
+        .hero p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 24px; opacity: 0.9; }
+        .hero a.btn { display: inline-block; background: #e8913a; color: white; padding: 12px 32px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 6px; }
+        .hero a.btn:hover { background: #d07a2a; }
+        .hero a.btn-outline { background: transparent; border: 2px solid white; }
+        .hero a.btn-outline:hover { background: rgba(255,255,255,0.15); }
+        .features { display: flex; max-width: 900px; margin: 40px auto; gap: 24px; padding: 0 20px; }
+        .feature-card { flex: 1; background: white; border-radius: 8px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center; }
+        .feature-card h3 { color: #1a3a5c; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.9rem; color: #666; }
+        footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Advising Scheduler</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/slots">Available Slots</a>
+            <a href="/book">Book Appointment</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/manage-slots">Manage Availability</a>
+        </nav>
+    </div>
+
+    <div class="hero">
+        <h2>CEO &amp; Entrepreneurial Advising</h2>
+        <p>Book one-on-one sessions with experienced CEOs and entrepreneurs.
+           Get expert guidance on business strategy, financial planning, and leadership.</p>
+        <a href="/slots" class="btn">View Available Slots</a>
+        <a href="/appointments" class="btn btn-outline">View Appointments</a>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <h3>Browse Availability</h3>
+            <p>View all open advising time slots by date and time. Find a session that fits your schedule.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Book Sessions</h3>
+            <p>Select a slot, choose a service type, and book your appointment in seconds.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Manage Appointments</h3>
+            <p>View your upcoming and past appointments. Cancel or reschedule as needed.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Entrepreneurial Advising Scheduler &mdash; CMPE 172 Term Project &mdash; Spring 2026</p>
+    </footer>
+</body>
+</html>

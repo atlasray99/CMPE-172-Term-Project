@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Appointment - Advising Scheduler</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+        .navbar { background: #1a3a5c; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar h1 { margin: 0; font-size: 1.3rem; }
+        .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
+        .navbar nav a:hover { color: white; }
+        .container { max-width: 600px; margin: 32px auto; padding: 0 20px; }
+        h2 { color: #1a3a5c; }
+        .form-card { background: white; border-radius: 8px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #1a3a5c; }
+        .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .btn-submit { background: #e8913a; color: white; padding: 12px 32px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn-submit:hover { background: #d07a2a; }
+        .error { background: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 4px; margin-bottom: 16px; }
+        footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Advising Scheduler</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/slots">Available Slots</a>
+            <a href="/book">Book Appointment</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/manage-slots">Manage Availability</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h2>Book an Advising Session</h2>
+
+        <div class="form-card">
+            <div th:if="${error}" class="error" th:text="${error}"></div>
+
+            <form method="post" action="/book">
+                <div class="form-group">
+                    <label for="slotId">Select Time Slot</label>
+                    <select id="slotId" name="slotId" required>
+                        <option value="">-- Choose a time slot --</option>
+                        <option th:each="slot : ${slots}"
+                                th:value="${slot.slotId}"
+                                th:selected="${selectedSlotId != null and selectedSlotId == slot.slotId}"
+                                th:text="${#temporals.format(slot.startTime, 'EEE, MMM d — h:mm a') + ' to ' + #temporals.format(slot.endTime, 'h:mm a')}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="serviceId">Select Service</label>
+                    <select id="serviceId" name="serviceId" required>
+                        <option value="">-- Choose a service --</option>
+                        <option th:each="svc : ${services}"
+                                th:value="${svc.serviceId}"
+                                th:text="${svc.serviceName + ' (' + svc.durationMinutes + ' min)'}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes (optional)</label>
+                    <textarea id="notes" name="notes" placeholder="Any topics or questions you'd like to discuss..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Book Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>Entrepreneurial Advising Scheduler &mdash; CMPE 172 Term Project &mdash; Spring 2026</p>
+    </footer>
+</body>
+</html>

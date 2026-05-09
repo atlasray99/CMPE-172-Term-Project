@@ -1,0 +1,21 @@
+# Maven build output
+target/
+
+# SQLite database file (generated at runtime)
+*.db
+*.db-shm
+*.db-wal
+
+# Log files
+logs/
+
+# macOS
+.DS_Store
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Maven wrapper jar (optional — keep if you want zero-setup builds)
+# .mvn/wrapper/maven-wrapper.jar

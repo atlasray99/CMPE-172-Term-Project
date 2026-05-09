@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmed - Advising Scheduler</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+        .navbar { background: #1a3a5c; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar h1 { margin: 0; font-size: 1.3rem; }
+        .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
+        .navbar nav a:hover { color: white; }
+        .container { max-width: 600px; margin: 32px auto; padding: 0 20px; }
+        .confirm-card { background: white; border-radius: 8px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center; }
+        .checkmark { font-size: 3rem; color: #27ae60; margin-bottom: 12px; }
+        .confirm-card h2 { color: #27ae60; margin-bottom: 8px; }
+        .details { text-align: left; margin: 24px 0; padding: 20px; background: #f8fafb; border-radius: 6px; }
+        .details .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .details .row:last-child { border-bottom: none; }
+        .details .label { font-weight: 600; color: #1a3a5c; }
+        .btn { display: inline-block; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 6px; }
+        .btn-primary { background: #1a3a5c; color: white; }
+        .btn-secondary { background: #e8913a; color: white; }
+        footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Advising Scheduler</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/slots">Available Slots</a>
+            <a href="/book">Book Appointment</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/manage-slots">Manage Availability</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="confirm-card">
+            <div class="checkmark">&#10003;</div>
+            <h2>Appointment Confirmed!</h2>
+            <p>Your advising session has been successfully booked.</p>
+
+            <div class="details">
+                <div class="row">
+                    <span class="label">Appointment ID</span>
+                    <span th:text="${appointment.appointmentId}"></span>
+                </div>
+                <div class="row">
+                    <span class="label">Service</span>
+                    <span th:text="${appointment.serviceName}"></span>
+                </div>
+                <div class="row">
+                    <span class="label">Date</span>
+                    <span th:text="${#temporals.format(appointment.slotStartTime, 'EEEE, MMMM d, yyyy')}"></span>
+                </div>
+                <div class="row">
+                    <span class="label">Time</span>
+                    <span th:text="${#temporals.format(appointment.slotStartTime, 'h:mm a') + ' — ' + #temporals.format(appointment.slotEndTime, 'h:mm a')}"></span>
+                </div>
+                <div class="row">
+                    <span class="label">Status</span>
+                    <span th:text="${appointment.status}"></span>
+                </div>
+                <div class="row" th:if="${appointment.notes != null and !appointment.notes.isEmpty()}">
+                    <span class="label">Notes</span>
+                    <span th:text="${appointment.notes}"></span>
+                </div>
+            </div>
+
+            <a href="/appointments" class="btn btn-primary">View All Appointments</a>
+            <a href="/slots" class="btn btn-secondary">Book Another Session</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Entrepreneurial Advising Scheduler &mdash; CMPE 172 Term Project &mdash; Spring 2026</p>
+    </footer>
+</body>
+</html>

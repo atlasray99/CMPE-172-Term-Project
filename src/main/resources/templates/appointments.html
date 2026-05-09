@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments - Advising Scheduler</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+        .navbar { background: #1a3a5c; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar h1 { margin: 0; font-size: 1.3rem; }
+        .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
+        .navbar nav a:hover { color: white; }
+        .container { max-width: 960px; margin: 32px auto; padding: 0 20px; }
+        h2 { color: #1a3a5c; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        th { background: #1a3a5c; color: white; padding: 12px 16px; text-align: left; }
+        td { padding: 12px 16px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f0f4f8; }
+        .status-booked { color: #2980b9; font-weight: 600; }
+        .status-cancelled { color: #c0392b; font-weight: 600; }
+        .status-completed { color: #27ae60; font-weight: 600; }
+        .empty-msg { text-align: center; padding: 40px; color: #999; }
+        .btn-book { display: inline-block; background: #e8913a; color: white; padding: 8px 20px; border-radius: 4px; text-decoration: none; margin-top: 12px; }
+        .btn-cancel { background: #c0392b; color: white; padding: 6px 14px; border: none; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+        .btn-cancel:hover { background: #a93226; }
+        footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Advising Scheduler</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/slots">Available Slots</a>
+            <a href="/book">Book Appointment</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/manage-slots">Manage Availability</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h2>Appointments</h2>
+
+        <div th:if="${#lists.isEmpty(appointments)}" class="empty-msg">
+            <p>No appointments found.</p>
+            <a href="/book" class="btn-book">Book Your First Session</a>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(appointments)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appt : ${appointments}">
+                    <td th:text="${appt.appointmentId}"></td>
+                    <td th:text="${appt.clientName}"></td>
+                    <td th:text="${appt.serviceName}"></td>
+                    <td th:text="${#temporals.format(appt.slotStartTime, 'MMM d, yyyy')}"></td>
+                    <td th:text="${#temporals.format(appt.slotStartTime, 'h:mm a') + ' — ' + #temporals.format(appt.slotEndTime, 'h:mm a')}"></td>
+                    <td>
+                        <span th:class="${'status-' + appt.status.toLowerCase()}" th:text="${appt.status}"></span>
+                    </td>
+                    <td>
+                        <form th:if="${appt.status == 'BOOKED'}" method="post" action="/cancel" style="display:inline;">
+                            <input type="hidden" name="appointmentId" th:value="${appt.appointmentId}" />
+                            <button type="submit" class="btn-cancel" onclick="return confirm('Cancel this appointment?');">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Entrepreneurial Advising Scheduler &mdash; CMPE 172 Term Project &mdash; Spring 2026</p>
+    </footer>
+</body>
+</html>

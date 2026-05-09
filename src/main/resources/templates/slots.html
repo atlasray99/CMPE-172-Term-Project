@@ -43,6 +43,7 @@
         <table th:if="${!#lists.isEmpty(slots)}">
             <thead>
                 <tr>
+                    <th>Advisor</th>
                     <th>Date</th>
                     <th>Start Time</th>
                     <th>End Time</th>
@@ -51,6 +52,7 @@
             </thead>
             <tbody>
                 <tr th:each="slot : ${slots}">
+                    <td th:text="${slot.advisorName}"></td>
                     <td th:text="${#temporals.format(slot.startTime, 'EEEE, MMM d, yyyy')}"></td>
                     <td th:text="${#temporals.format(slot.startTime, 'h:mm a')}"></td>
                     <td th:text="${#temporals.format(slot.endTime, 'h:mm a')}"></td>

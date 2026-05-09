@@ -19,6 +19,7 @@ public class AvailabilitySlotRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // Basic row mapper — used for lookups by ID and management pages
     private final RowMapper<AvailabilitySlot> rowMapper = (ResultSet rs, int rowNum) -> {
         AvailabilitySlot slot = new AvailabilitySlot();
         slot.setSlotId(rs.getInt("slot_id"));
@@ -30,9 +31,27 @@ public class AvailabilitySlotRepository {
         return slot;
     };
 
+    // Extended row mapper — includes advisor name via JOIN
+    private final RowMapper<AvailabilitySlot> rowMapperWithAdvisor = (ResultSet rs, int rowNum) -> {
+        AvailabilitySlot slot = new AvailabilitySlot();
+        slot.setSlotId(rs.getInt("slot_id"));
+        slot.setAdvisorId(rs.getInt("advisor_id"));
+        slot.setStartTime(rs.getTimestamp("start_time").toLocalDateTime());
+        slot.setEndTime(rs.getTimestamp("end_time").toLocalDateTime());
+        slot.setBooked(rs.getBoolean("is_booked"));
+        slot.setVersion(rs.getInt("version"));
+        slot.setAdvisorName(rs.getString("username"));
+        return slot;
+    };
+
     public List<AvailabilitySlot> findAvailableSlots() {
-        String sql = "SELECT * FROM availability_slots WHERE is_booked = FALSE ORDER BY start_time";
-        return jdbcTemplate.query(sql, rowMapper);
+        String sql = "SELECT sl.*, u.username "
+                   + "FROM availability_slots sl "
+                   + "JOIN advisors a ON sl.advisor_id = a.advisor_id "
+                   + "JOIN users u ON a.user_id = u.user_id "
+                   + "WHERE sl.is_booked = FALSE "
+                   + "ORDER BY sl.start_time";
+        return jdbcTemplate.query(sql, rowMapperWithAdvisor);
     }
 
     public Optional<AvailabilitySlot> findById(int slotId) {

@@ -6,6 +6,7 @@ public class AvailabilitySlot {
 
     private int slotId;
     private int advisorId;
+    private String advisorName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isBooked;
@@ -28,6 +29,9 @@ public class AvailabilitySlot {
 
     public int getAdvisorId() { return advisorId; }
     public void setAdvisorId(int advisorId) { this.advisorId = advisorId; }
+
+    public String getAdvisorName() { return advisorName; }
+    public void setAdvisorName(String advisorName) { this.advisorName = advisorName; }
 
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }

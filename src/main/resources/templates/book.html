@@ -9,16 +9,49 @@
         .navbar h1 { margin: 0; font-size: 1.3rem; }
         .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
         .navbar nav a:hover { color: white; }
-        .container { max-width: 600px; margin: 32px auto; padding: 0 20px; }
-        h2 { color: #1a3a5c; }
-        .form-card { background: white; border-radius: 8px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #1a3a5c; }
-        .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
+        .container { max-width: 640px; margin: 32px auto; padding: 0 20px; }
+        h2 { color: #1a3a5c; margin-bottom: 4px; }
+        .subtitle { color: #666; margin-top: 0; margin-bottom: 24px; font-size: 0.95rem; }
+
+        .card { background: white; border-radius: 8px; padding: 28px 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); margin-bottom: 20px; }
+        .card h3 { margin: 0 0 16px; color: #1a3a5c; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+        .step-badge { background: #1a3a5c; color: white; border-radius: 50%; width: 22px; height: 22px;
+                      display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #555; font-size: 0.9rem; }
+        .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px;
+            font-size: 0.97rem; box-sizing: border-box; color: #333; background: white;
+        }
+        .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #1a3a5c; box-shadow: 0 0 0 2px rgba(26,58,92,0.12);
+        }
         .form-group textarea { resize: vertical; min-height: 80px; }
-        .btn-submit { background: #e8913a; color: white; padding: 12px 32px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+
+        .advisor-card {
+            border: 2px solid #e2e8f0; border-radius: 6px; padding: 14px 16px;
+            margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s;
+            display: flex; align-items: flex-start; gap: 14px;
+        }
+        .advisor-card input[type="radio"] { margin-top: 3px; accent-color: #1a3a5c; }
+        .advisor-card .name { font-weight: 600; color: #1a3a5c; margin-bottom: 2px; }
+        .advisor-card .spec { font-size: 0.85rem; color: #777; }
+        .advisor-card:has(input:checked) { border-color: #1a3a5c; background: #f0f4f8; }
+
+        .btn-advisor { background: #1a3a5c; color: white; border: none; padding: 10px 24px;
+                       border-radius: 4px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .btn-advisor:hover { background: #0f2540; }
+
+        .btn-submit { background: #e8913a; color: white; padding: 12px 32px; border: none;
+                      border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 4px; }
         .btn-submit:hover { background: #d07a2a; }
-        .error { background: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 4px; margin-bottom: 16px; }
+
+        .card.dimmed { opacity: 0.45; pointer-events: none; }
+
+        .error { background: #ffebee; border: 1px solid #ef9a9a; color: #c62828;
+                 padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; }
+
         footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
     </style>
 </head>
@@ -28,7 +61,7 @@
         <nav>
             <a href="/">Home</a>
             <a href="/slots">Available Slots</a>
-            <a href="/book">Book Appointment</a>
+            <a href="/book" class="active">Book Appointment</a>
             <a href="/appointments">My Appointments</a>
             <a href="/manage-slots">Manage Availability</a>
         </nav>
@@ -36,15 +69,41 @@
 
     <div class="container">
         <h2>Book an Advising Session</h2>
+        <p class="subtitle">Choose an advisor, then pick a time slot and service.</p>
 
-        <div class="form-card">
-            <div th:if="${error}" class="error" th:text="${error}"></div>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <!-- Step 1: Pick an advisor -->
+        <div class="card">
+            <h3><span class="step-badge">1</span> Choose an Advisor</h3>
+            <form method="get" action="/book">
+                <div th:each="advisor : ${advisors}">
+                    <label class="advisor-card">
+                        <input type="radio" name="advisorId"
+                               th:value="${advisor.advisorId}"
+                               th:checked="${selectedAdvisorId != null and selectedAdvisorId == advisor.advisorId}"
+                               onchange="this.form.submit()" />
+                        <div>
+                            <div class="name" th:text="${advisor.fullName}"></div>
+                            <div class="spec" th:text="${advisor.specialization}"></div>
+                        </div>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 2: Pick slot, service, notes (only shown after advisor is selected) -->
+        <div class="card" th:classappend="${selectedAdvisorId == null} ? 'dimmed'">
+            <h3><span class="step-badge">2</span> Choose a Slot &amp; Service</h3>
 
             <form method="post" action="/book">
+                <!-- Pass the selected advisor through to the POST handler -->
+                <input type="hidden" name="advisorId" th:value="${selectedAdvisorId}" />
+
                 <div class="form-group">
-                    <label for="slotId">Select Time Slot</label>
+                    <label for="slotId">Available Time Slots</label>
                     <select id="slotId" name="slotId" required>
-                        <option value="">-- Choose a time slot --</option>
+                        <option value="">-- Select a time slot --</option>
                         <option th:each="slot : ${slots}"
                                 th:value="${slot.slotId}"
                                 th:selected="${selectedSlotId != null and selectedSlotId == slot.slotId}"
@@ -54,9 +113,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="serviceId">Select Service</label>
+                    <label for="serviceId">Service Type</label>
                     <select id="serviceId" name="serviceId" required>
-                        <option value="">-- Choose a service --</option>
+                        <option value="">-- Select a service --</option>
                         <option th:each="svc : ${services}"
                                 th:value="${svc.serviceId}"
                                 th:text="${svc.serviceName + ' (' + svc.durationMinutes + ' min)'}">

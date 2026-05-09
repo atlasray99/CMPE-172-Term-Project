@@ -31,4 +31,9 @@ public class ServiceRepository {
         String sql = "SELECT * FROM services ORDER BY service_name";
         return jdbcTemplate.query(sql, rowMapper);
     }
+
+    public List<Service> findByAdvisorId(int advisorId) {
+        String sql = "SELECT * FROM services WHERE advisor_id = ? ORDER BY service_name";
+        return jdbcTemplate.query(sql, rowMapper, advisorId);
+    }
 }

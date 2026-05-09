@@ -1,6 +1,8 @@
 package com.advisingscheduler.repository;
 
+import com.advisingscheduler.model.Advisor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,24 @@ public class AdvisorRepository {
 
     public AdvisorRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private final RowMapper<Advisor> advisorRowMapper = (rs, rowNum) -> {
+        Advisor a = new Advisor();
+        a.setAdvisorId(rs.getInt("advisor_id"));
+        a.setFullName(rs.getString("full_name"));
+        a.setSpecialization(rs.getString("specialization"));
+        return a;
+    };
+
+    // All advisors — used to populate the advisor picker on the booking form
+    public List<Advisor> findAll() {
+        String sql =
+            "SELECT a.advisor_id, (u.first_name || ' ' || u.last_name) AS full_name, a.specialization " +
+            "FROM advisors a " +
+            "JOIN users u ON a.user_id = u.user_id " +
+            "ORDER BY u.first_name";
+        return jdbcTemplate.query(sql, advisorRowMapper);
     }
 
     /**

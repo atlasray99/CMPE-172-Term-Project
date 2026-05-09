@@ -1,5 +1,6 @@
 package com.advisingscheduler.controller;
 
+import com.advisingscheduler.model.Advisor;
 import com.advisingscheduler.model.Appointment;
 import com.advisingscheduler.model.AvailabilitySlot;
 import com.advisingscheduler.service.AppointmentService;
@@ -48,21 +49,33 @@ public class AppointmentController {
     }
 
     @GetMapping("/book")
-    public String showBookingForm(@RequestParam(required = false) Integer slotId, Model model) {
-        logger.debug("GET /book — showing booking form (preselected slotId={})", slotId);
-        List<AvailabilitySlot> availableSlots = availabilityService.getAvailableSlots();
-        List<com.advisingscheduler.model.Service> services = serviceService.getAllServices();
+    public String showBookingForm(@RequestParam(required = false) Integer advisorId,
+                                  @RequestParam(required = false) Integer slotId,
+                                  Model model) {
+        logger.debug("GET /book — advisorId={} slotId={}", advisorId, slotId);
 
-        model.addAttribute("slots", availableSlots);
-        model.addAttribute("services", services);
+        List<Advisor> advisors = availabilityService.getAllAdvisors();
+        model.addAttribute("advisors", advisors);
+        model.addAttribute("selectedAdvisorId", advisorId);
         model.addAttribute("selectedSlotId", slotId);
+
+        if (advisorId != null) {
+            // Advisor chosen — load their slots and services
+            model.addAttribute("slots",    availabilityService.getAvailableSlotsByAdvisor(advisorId));
+            model.addAttribute("services", serviceService.getServicesByAdvisor(advisorId));
+        } else {
+            // No advisor chosen yet — empty lists so the second section stays hidden
+            model.addAttribute("slots",    List.of());
+            model.addAttribute("services", List.of());
+        }
         return "book";
     }
 
     @PostMapping("/book")
     public String processBooking(@RequestParam int slotId,
                                  @RequestParam int serviceId,
-                                 @RequestParam(defaultValue = "2") int clientId,
+                                 @RequestParam(required = false) Integer advisorId,
+                                 @RequestParam(defaultValue = "3") int clientId,
                                  @RequestParam(required = false) String notes,
                                  Model model) {
         logger.info("POST /book — slotId={} serviceId={} clientId={}", slotId, serviceId, clientId);
@@ -89,9 +102,11 @@ public class AppointmentController {
             return "redirect:/confirmation?id=" + appointmentId;
         } catch (IllegalStateException e) {
             logger.warn("POST /book — booking failed for slotId={}: {}", slotId, e.getMessage());
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("slots", availabilityService.getAvailableSlots());
-            model.addAttribute("services", serviceService.getAllServices());
+            model.addAttribute("error",             e.getMessage());
+            model.addAttribute("advisors",          availabilityService.getAllAdvisors());
+            model.addAttribute("selectedAdvisorId", advisorId);
+            model.addAttribute("slots",    advisorId != null ? availabilityService.getAvailableSlotsByAdvisor(advisorId) : List.of());
+            model.addAttribute("services", advisorId != null ? serviceService.getServicesByAdvisor(advisorId)            : List.of());
             return "book";
         }
     }

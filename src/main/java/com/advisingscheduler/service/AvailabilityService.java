@@ -1,5 +1,6 @@
 package com.advisingscheduler.service;
 
+import com.advisingscheduler.model.Advisor;
 import com.advisingscheduler.model.AvailabilitySlot;
 import com.advisingscheduler.repository.AdvisorRepository;
 import com.advisingscheduler.repository.AvailabilitySlotRepository;
@@ -26,9 +27,18 @@ public class AvailabilityService {
         this.advisorRepository = advisorRepository;
     }
 
+    public List<Advisor> getAllAdvisors() {
+        return advisorRepository.findAll();
+    }
+
     public List<AvailabilitySlot> getAvailableSlots() {
         logger.info("Fetching all available (unbooked) slots");
         return slotRepository.findAvailableSlots();
+    }
+
+    public List<AvailabilitySlot> getAvailableSlotsByAdvisor(int advisorId) {
+        logger.info("Fetching available slots for advisorId={}", advisorId);
+        return slotRepository.findAvailableSlotsByAdvisor(advisorId);
     }
 
     public Optional<AvailabilitySlot> getSlotById(int slotId) {

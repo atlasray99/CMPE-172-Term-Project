@@ -17,4 +17,8 @@ public class ServiceService {
     public List<com.advisingscheduler.model.Service> getAllServices() {
         return serviceRepository.findAll();
     }
+
+    public List<com.advisingscheduler.model.Service> getServicesByAdvisor(int advisorId) {
+        return serviceRepository.findByAdvisorId(advisorId);
+    }
 }

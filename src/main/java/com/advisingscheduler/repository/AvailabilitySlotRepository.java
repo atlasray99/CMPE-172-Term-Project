@@ -60,6 +60,17 @@ public class AvailabilitySlotRepository {
         return jdbcTemplate.query(sql, rowMapper, advisorId);
     }
 
+    // Available (unbooked) slots for one specific advisor — used on the booking form
+    public List<AvailabilitySlot> findAvailableSlotsByAdvisor(int advisorId) {
+        String sql = "SELECT sl.*, (u.first_name || ' ' || u.last_name) AS advisor_full_name "
+                   + "FROM availability_slots sl "
+                   + "JOIN advisors a ON sl.advisor_id = a.advisor_id "
+                   + "JOIN users u ON a.user_id = u.user_id "
+                   + "WHERE sl.is_booked = FALSE AND sl.advisor_id = ? "
+                   + "ORDER BY sl.start_time";
+        return jdbcTemplate.query(sql, rowMapperWithAdvisor, advisorId);
+    }
+
     public Optional<AvailabilitySlot> findById(int slotId) {
         String sql = "SELECT * FROM availability_slots WHERE slot_id = ?";
         List<AvailabilitySlot> results = jdbcTemplate.query(sql, rowMapper, slotId);

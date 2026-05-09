@@ -91,7 +91,13 @@ public class AvailabilitySlotRepository {
 
     public void insert(int advisorId, java.time.LocalDateTime startTime, java.time.LocalDateTime endTime) {
         String sql = "INSERT INTO availability_slots (advisor_id, start_time, end_time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, advisorId, startTime, endTime);
+        // Explicitly convert to java.sql.Timestamp so SQLite JDBC stores in
+        // 'yyyy-MM-dd HH:mm:ss' format (readable by getTimestamp() on read-back).
+        // Passing LocalDateTime directly causes SQLite JDBC to call toString(),
+        // producing the ISO 'T'-separated format which getTimestamp() can't parse.
+        jdbcTemplate.update(sql, advisorId,
+                java.sql.Timestamp.valueOf(startTime),
+                java.sql.Timestamp.valueOf(endTime));
     }
 
     public int deleteById(int slotId) {

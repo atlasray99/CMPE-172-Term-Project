@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Advisor Login - Advising Scheduler</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+        .navbar { background: #1a3a5c; color: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar h1 { margin: 0; font-size: 1.3rem; }
+        .navbar nav a { color: #ccd6e0; text-decoration: none; margin-left: 24px; font-size: 0.95rem; }
+        .navbar nav a:hover { color: white; }
+
+        .container { max-width: 420px; margin: 80px auto; padding: 0 20px; }
+
+        .login-card {
+            background: white; border-radius: 8px; padding: 36px 40px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+        }
+        .login-card h2 { margin: 0 0 6px; color: #1a3a5c; font-size: 1.4rem; }
+        .login-card .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 28px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.9rem; color: #555; margin-bottom: 6px; }
+        .form-group input {
+            width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px;
+            font-size: 1rem; box-sizing: border-box; color: #333;
+        }
+        .form-group input:focus { outline: none; border-color: #1a3a5c; box-shadow: 0 0 0 2px rgba(26,58,92,0.15); }
+
+        .btn-login {
+            width: 100%; background: #1a3a5c; color: white; border: none;
+            padding: 11px; border-radius: 4px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; margin-top: 4px;
+        }
+        .btn-login:hover { background: #0f2540; }
+
+        .alert-error {
+            background: #ffebee; border: 1px solid #ef9a9a; color: #c62828;
+            padding: 10px 14px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem;
+        }
+
+        .back-link { text-align: center; margin-top: 20px; font-size: 0.9rem; }
+        .back-link a { color: #1a3a5c; text-decoration: none; }
+        .back-link a:hover { text-decoration: underline; }
+
+        .demo-hint {
+            background: #f0f4f8; border-radius: 4px; padding: 12px 14px;
+            margin-top: 24px; font-size: 0.85rem; color: #555;
+        }
+        .demo-hint strong { color: #1a3a5c; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Advising Scheduler</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/slots">Available Slots</a>
+            <a href="/book">Book Appointment</a>
+            <a href="/appointments">My Appointments</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="login-card">
+            <h2>Advisor Login</h2>
+            <p class="subtitle">Sign in to manage your availability</p>
+
+            <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+            <form action="/advisor/login" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required />
+                </div>
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+
+            <div class="demo-hint">
+                <strong>Demo accounts:</strong><br/>
+                Jane Smith &mdash; <code>advisor_jane</code> / <code>jane123</code><br/>
+                Mark Johnson &mdash; <code>advisor_mark</code> / <code>mark123</code>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/">&larr; Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

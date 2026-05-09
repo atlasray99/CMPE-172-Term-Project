@@ -47,6 +47,12 @@
         .btn-delete:disabled { opacity: 0.35; cursor: not-allowed; }
         .empty-msg { text-align: center; padding: 40px; color: #999; }
         footer { text-align: center; padding: 24px; color: #999; font-size: 0.85rem; }
+        .advisor-bar { display: flex; align-items: center; justify-content: space-between;
+                       background: #e8f0f8; border-radius: 6px; padding: 10px 16px; margin-bottom: 20px; }
+        .advisor-bar span { font-size: 0.95rem; color: #1a3a5c; font-weight: 600; }
+        .btn-logout { background: none; border: 1px solid #1a3a5c; color: #1a3a5c;
+                      padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-logout:hover { background: #1a3a5c; color: white; }
     </style>
 </head>
 <body>
@@ -64,6 +70,13 @@
     <div class="container">
         <h2>Manage Availability</h2>
         <p class="subtitle">Add or remove your available time slots. Booked slots cannot be deleted.</p>
+
+        <div class="advisor-bar">
+            <span>Signed in as: <span th:text="${advisorName}"></span></span>
+            <form action="/advisor/logout" method="post" style="margin:0;">
+                <button type="submit" class="btn-logout">Sign Out</button>
+            </form>
+        </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
